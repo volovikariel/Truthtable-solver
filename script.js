@@ -1,31 +1,4 @@
-const reader = require('readline');
-const rl = reader.createInterface({
-    input: process.stdin,
-    output: process.stdout
-})
-
-function askQuestion(query) {
-    let response;
-
-    rl.setPrompt(query);
-    rl.prompt();
-
-    return new Promise((resolve) => {
-        rl.on('line', (userInput) => {
-            response = userInput;
-            rl.close();
-        });
-
-        rl.on('close', () => {
-            resolve(response);
-        });
-    });
-}
-
-let inputStr;
-await (async () => {
-    inputStr = await askQuestion('Please input p,q, p -> q\n');
-})();
+let inputStr = 'p,q, p xor q';
 
 let input = inputStr.trim().split(',');
 
@@ -129,7 +102,7 @@ function _recursFunc(expression) {
             right = (varList[right] == undefined) ? !right : !varList[right][currRow]; 
         }
       }
-      result = evalExpression(recursFunc(left), recursFunc(right), operator, currRow);
+      return evalExpression(recursFunc(left), recursFunc(right), operator, currRow);
     }
     else if(oneParenthesisLeft != null) {
       console.table(['Left', oneParenthesisLeft] || 'Not left');
@@ -147,7 +120,7 @@ function _recursFunc(expression) {
             right = (varList[right] == undefined) ? !right : !varList[right][currRow]; 
         }
       }
-      result = evalExpression(recursFunc(left), right, operator, currRow);
+      return evalExpression(recursFunc(left), right, operator, currRow);
     }
     else if(oneParenthesisRight != null) {
       console.table(['Right parenthesis', oneParenthesisRight] || 'Not right');
@@ -165,7 +138,7 @@ function _recursFunc(expression) {
             right = (varList[right] == undefined) ? !right : !varList[right][currRow]; 
         }
       }
-      result = evalExpression(left, recursFunc(right), operator, currRow);
+      return evalExpression(left, recursFunc(right), operator, currRow);
     }
     else if(noParenthesis != null) {
       console.table(['None', noParenthesis] || 'Has parenth');
@@ -183,7 +156,7 @@ function _recursFunc(expression) {
             right = (varList[right] == undefined) ? !right : !varList[right][currRow]; 
         }
       }
-      result = evalExpression(left, right, operator, currRow);
+      return evalExpression(left, right, operator, currRow);
     }
     else if(expression == false) {
         return 0;
@@ -227,10 +200,33 @@ function _evalExpression(left, right, operator, row) {
             return conditional(left, right, row);
         case '<->':
             return biconditional(left, right, row);
+        case 'xor':
+            return xor(left, right, row);
 
         default: console.log(`Invalid operator ${operator}`);
     }
 
+}
+
+function xor(left, right, row) {
+    let returnValue = _xor(left,right,row);
+    console.log(`Result of XOR operation on ${left}, ${right}, ${row} is ${returnValue}`);
+    return returnValue;
+}
+
+function _xor(left, right, row) {
+    if(!isNaN(left) && !isNaN(right)) {
+        return Number(left) != Number(right) ? 1 : 0;
+    }
+    else if(!isNaN(left)) {
+       return Number(left) != varList[right][row] ? 1 : 0;
+    }
+    else if(!isNaN(right)) {
+        return varList[left][row] != Number(right) ? 1 : 0;
+    }
+    else {
+        return varList[left][row] != varList[right][row] ? 1 : 0;
+    }
 }
 
 function biconditional(left, right, row) {
@@ -293,7 +289,7 @@ function _or(left, right,row){
 function conditional(left, right, row) {
     let returnValue = _conditional(left,right,row);
     console.log(`Result of CONDITIONAL operation on ${left}, ${right}, ${row} is ${returnValue}`);
-    return returnValue;
+    return returnValue == true ? 1 : 0;
 }
 function _conditional(left, right, row) {
     if(!isNaN(left) && !isNaN(right)) {
@@ -331,10 +327,10 @@ function _conditional(left, right, row) {
 }
 
 varList["result"] = [];
-//for(let i = 0; i < 2 ** numVar; i++) {
+for(let i = 0; i < 2 ** numVar; i++) {
    varList["result"].push(recursFunc(inputStr))
    currRow++;
-//}
+}
 
 // The final truth table
 console.table(varList);
