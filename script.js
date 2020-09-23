@@ -396,8 +396,9 @@ console.table(varList);
 console.table(solutions);
 
 let latexFormat = '';
-latexFormat += `\\begin{displaymath}\n`;
-latexFormat += `\t\\begin{array}{|`;
+latexFormat += `\\begin{displaymath}\n    `;
+latexFormat += `\\begin{center}\n\t`;
+latexFormat += `\\begin{array}{|`;
 // Variables
 for(let i = 0; i < numVar; i++) {
     if(i == numVar - 1) {
@@ -486,24 +487,26 @@ for(let row = 0; row < Object.values(solutions)[0].length; row++) {
     }
     latexFormat += '\\\\\n\t';
 }
-latexFormat += `\\end{array}\n`;
+latexFormat += `\\end{array}\n    `; //4 spaces = half my console tab (8)
+latexFormat += `\\end{center}\n`;
 latexFormat += `\\end{displaymath}`;
 console.log(latexFormat);
 //console.log(Object.values(solutions)[Object.values(solutions).length -1]);
 
 
-//\begin{document}
-//\begin{diplaymath}
-//    \begin{array}{|c c c|c c c|c|c c c|}
-//        p & q & r & p \lor r & \land & q \lor r & \leftrightarrow & p \land q & \lor & r\\
-//    \hline
-//        T & T & T & T & T & T & T & T & T & T\\
-//        T & T & F & T & T & T & T & T & T & T\\
-//        T & F & T & T & T & T & T & F & T & T\\
-//        T & F & F & T & F & F & T & F & F & T\\
-//        F & T & T & T & T & T & T & F & T & T\\
-//        F & T & F & F & F & T & T & F & F & T\\
-//        F & F & T & T & T & T & T & F & T & T\\
-//        F & F & F & F & F & F & T & F & F & T\\
-//    \end{array}
+//\begin{displaymath}
+//        \begin{center}
+//        \begin{array}{|c c c|c c c c c|c|}
+//                p & q & r & p \rightarrow  r & q \rightarrow  r & (p \rightarrow  r) \lor  (q \rightarrow  r) & p \lor  q & (p \lor  q) \rightarrow  (r) & ((p \rightarrow  r) \lor  (q \rightarrow  r)) \rightarrow  ((p \lor  q) \rightarrow  r)\\
+//        \hline
+//        T & T & T & T & T & T & T & T & T\\
+//        T & T & F & F & F & F & T & F & T\\
+//        T & F & T & T & T & T & T & T & T\\
+//        T & F & F & F & T & T & T & F & F\\
+//        F & T & T & T & T & T & T & T & T\\
+//        F & T & F & T & F & T & T & F & F\\
+//        F & F & T & T & T & T & F & T & T\\
+//        F & F & F & T & T & T & F & T & T\\
+//        \end{array}
+//        \end{center}
 //\end{displaymath}
