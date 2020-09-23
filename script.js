@@ -1,4 +1,5 @@
-let inputStr = 'p,q, p v q'; 
+//TODO: Check for the switching last two
+let inputStr = 'p,q,r, ((p -> r) v (q -> r)) -> ((p v q) -> r)'; 
 
 let input = inputStr.trim().split(',');
 
@@ -16,9 +17,20 @@ for(let i = 0; i < numVar; i++) {
     Object.assign(varList, {[input[i]]: []});
     Object.assign(solutions, {[input[i]]: []});
 }
-
+/** FF, FT, TF, TT **/
 // Filling the Variables' truth tables using binary
-for(let row = 0; row < 2 ** numVar; row++) {
+//for(let row = 0; row < 2 ** numVar; row++) {
+//    let bin = (row.toString(2)).padStart(numVar, '0');
+//    
+//    for(let col = 0; col < numVar; col++) {
+//        (varList[input[col]]).push(Number(bin[col]));
+//        (solutions[input[col]]).push(Number(bin[col]));
+//    }
+//}
+
+/** TT, TF, FT, FF **/
+// Filling the Variables' truth tables using binary
+for(let row = 2 ** numVar - 1; row >= 0; row--) {
     let bin = (row.toString(2)).padStart(numVar, '0');
     
     for(let col = 0; col < numVar; col++) {
@@ -108,7 +120,7 @@ function _recursFunc(expression) {
         //Object.assign(solutions, {[`${rightNegatedExpress[3]}(${right})`]: negatedRight});
         solutions[`${rightNegatedExpress[3]}(${right})`] = solutions[`${rightNegatedExpress[3]}(${right})`] || [];
         solutions[`${rightNegatedExpress[3]}(${right})`].push(negatedRight);
-        let returnedValue = evalExpression(recursFunc(left), !recursFunc(right) == true ? 1 : 0, operator, currRow, [left, operator, `~(${right})`]); 
+        let returnedValue = evalExpression(recursFunc(left), !recursFunc(right) == true ? 1 : 0, operator, currRow, [`(${left})`, operator, `~(${right})`]); 
         return returnedValue;
     }
    
@@ -147,7 +159,7 @@ function _recursFunc(expression) {
             right = (varList[right] == undefined) ? !right : !varList[right][currRow]; 
         }
       }
-      return evalExpression(recursFunc(left), right, operator, currRow, [left, operator, right]);
+      return evalExpression(recursFunc(left), right, operator, currRow, [`(${left})`, operator, `(${right})`]);
     }
     else if(oneParenthesisRight != null) {
       console.table(['Right parenthesis', oneParenthesisRight] || 'Not right');
@@ -165,7 +177,7 @@ function _recursFunc(expression) {
             right = (varList[right] == undefined) ? !right : !varList[right][currRow]; 
         }
       }
-      return evalExpression(left, recursFunc(right), operator, currRow, [left, operator, right]);
+      return evalExpression(left, recursFunc(right), operator, currRow, [`(${left})`, operator, `(${right})`]);
     }
     else if(noParenthesis != null) {
       console.table(['None', noParenthesis] || 'Has parenth');
@@ -181,11 +193,11 @@ function _recursFunc(expression) {
       }
       if((noParenthesis[1] || '').length % 2 == 1) {
           left = (varList[left] == undefined) ? !left : !varList[left][currRow]; 
-          return evalExpression(recursFunc(left) == true ? 1 : 0, right, operator, currRow, [`~${noParenthesis[2]}`, operator, right]);          
+          return evalExpression(recursFunc(left) == true ? 1 : 0, right, operator, currRow, [`~${noParenthesis[2]}`, operator, `(${right})`]);          
       }
       if((noParenthesis[4] || '').length % 2 == 1) {
           right = (varList[right] == undefined) ? !right : !varList[right][currRow]; 
-          return evalExpression(left, recursFunc(right) == true ? 1 : 0, operator, currRow, [left, operator, `~${noParenthesis[5]}`]);          
+          return evalExpression(left, recursFunc(right) == true ? 1 : 0, operator, currRow, [`(${left})`, operator, `~${noParenthesis[5]}`]);          
       }
       return evalExpression(left, right, operator, currRow, [left, operator, right]);
     }
@@ -397,19 +409,19 @@ for(let i = 0; i < numVar; i++) {
 // Expressions evaluated
 for(let i = 0; i < Object.keys(solutions).length - numVar; i++) {
     // If it's greater than 3 then you can do |variables|(oneside)|operator|(oneside)
-    if(Object.keys(solutions).length - numVar >= 3) {
-        if(i == Object.keys(solutions).length - numVar - 2) {
-            latexFormat += '|c|c|}\n\t\t';
-            break;
-        }
-        if(i == Object.keys(solutions).length - numVar - 3) {
-            latexFormat += 'c';
-            continue;
-        }
-        latexFormat += `c `;
-    }
-    else {
-        if(i == Object.keys(solutions).length - numVar - 1) {
+   // if(Object.keys(solutions).length - numVar >= 3) {
+   //     if(i == Object.keys(solutions).length - numVar - 2) {
+   //         latexFormat += '|c|c|}\n\t\t';
+   //         break;
+   //     }
+   //     if(i == Object.keys(solutions).length - numVar - 3) {
+   //         latexFormat += 'c';
+   //         continue;
+   //     }
+   //     latexFormat += `c `;
+   // }
+   // else {
+        if(i == Object.keys(solutions).length - numVar - 1) { 
             latexFormat += '|c|}\n\t\t';
             break;
         }
@@ -418,24 +430,25 @@ for(let i = 0; i < Object.keys(solutions).length - numVar; i++) {
             continue;
         }
         latexFormat += `c `;
-    }
+   // }
 }
 // Looping through the expressions
+console.table(Object.keys(solutions));
 for(let i = 0; i < Object.keys(solutions).length; i++) {
-    if(Object.keys(solutions).length - numVar >= 3) { //Length stuff
-        if(i == Object.keys(solutions).length - 2) {
-            latexFormat += parse(Object.keys(solutions)[i + 1]).match(/(\\leftrightarrow|\\lor|\\land|\\rightarrow|\\oplus){1}/g)[0] + ' & ';
-            latexFormat += parse(Object.keys(solutions)[i]) + '\\\\\n\t\\hline\n\t';
-            break;
-        }
-    }
-    else {
+   // if(Object.keys(solutions).length - numVar >= 3) { // p,q, p v q, (p v q) ^ p
+   //     if(i == Object.keys(solutions).length - 2) {
+   //         latexFormat += parse(Object.keys(solutions)[i + 1]).match(/([^)]+)(\\leftrightarrow|\\lor|\\land|\\rightarrow|\\oplus){1}([^)]+)/g)[0] + ' & ';
+   //         latexFormat += parse(Object.keys(solutions)[i]) + '\\\\\n\t\\hline\n\t';
+   //         break;
+   //     }
+   // }
+   // else {
         console.log('here');
         if(i == Object.keys(solutions).length - 1) {
             latexFormat += parse(Object.keys(solutions)[i]) + '\\\\\n\t\\hline\n\t';
             break;
         }
-    }
+   // }
     latexFormat += parse(Object.keys(solutions)[i]) + ' & ';
 }
 // Function to turn the expression into \lor, etc
@@ -457,15 +470,19 @@ let _;
 for(let row = 0; row < Object.values(solutions)[0].length; row++) {
     for(let col = 0; col < Object.keys(solutions).length; col++) {
        _ = Object.values(solutions)[col][row] == '1' ? 'T' : 'F';
-        // Switch the last two so that we have a cleaner solution (have the v sign be on is own)
-        if(col == Object.keys(solutions).length - 2) {
-            _ = Object.values(solutions)[col + 1][row] == '1' ? 'T' : 'F';
-            latexFormat += `${_} & `
-            _ = Object.values(solutions)[col][row] == '1' ? 'T' : 'F';
-            latexFormat += `${_}`;
-            break;
-        }
+       if(col == Object.keys(solutions).length -1) {
+           latexFormat += `${_}`;
+           break;
+       }
        latexFormat += `${_} & `;
+        // Switch the last two so that we have a cleaner solution (have the v sign be on is own)
+       // if(col == Object.keys(solutions).length - 2) {
+       //     _ = Object.values(solutions)[col + 1][row] == '1' ? 'T' : 'F';
+       //     latexFormat += `${_} & `
+       //     _ = Object.values(solutions)[col][row] == '1' ? 'T' : 'F';
+       //     latexFormat += `${_}`;
+       //     break;
+       // }
     }
     latexFormat += '\\\\\n\t';
 }
@@ -476,7 +493,7 @@ console.log(latexFormat);
 
 
 //\begin{document}
-//\begin{displaymath}
+//\begin{diplaymath}
 //    \begin{array}{|c c c|c c c|c|c c c|}
 //        p & q & r & p \lor r & \land & q \lor r & \leftrightarrow & p \land q & \lor & r\\
 //    \hline
