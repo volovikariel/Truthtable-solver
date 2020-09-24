@@ -25,7 +25,7 @@
 ### Example of me using it
 1) Open Latex file
 2) Open script.js with a terminal [as wide as possible horizontally so as to not to have lines roll over onto the next line]
-3) Edit the inputStr to 
+3) Edit the inputStr to match the expression you would like to generate a truthtable for
 ```javascript
   let inputStr = 'p,q,r, ((p -> r) v (q -> r)) -> ((p v q) -> r)';
 ```
