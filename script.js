@@ -1,7 +1,20 @@
 //TODO: Check for the switching last two
-let inputStr = 'p,q,r, ((p -> r) v (q -> r)) -> ((p v q) -> r)'; 
+let inputStr = ' ((p -> r) v (q -> r)) -> ((p v q) -> r)'; 
+
+let predicates = "";
+for(let i = 0; i < inputStr.length(); i++) {
+    if((inputStr[i].charCodeAt(0)>64 && inputStr[i].charCodeAt(0)<91)||(inputStr[i].charCodeAt(0)>96 && inputStr[i].charCodeAt(0)<123)){
+        if(!predicates.includes(inputStr[i])&&!predicates.includes(86)&&!predicates.includes(118)){
+            predicates += `${inputStr[i]},`;
+        }
+    }
+}
+
+inputStr = predicates + inputStr;
 
 let input = inputStr.trim().split(',');
+
+
 
 // P, Q = 2
 //let numVar = inputTwo.length - 1;
