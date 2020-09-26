@@ -12,7 +12,7 @@
 ```
 3. Modify the `script.js` file's first line for the input you want:
 ```javascript
-  let inputStr = 'p,q,r, ((p -> r) v (q -> r)) -> ((p v q) -> r)';
+  let inputStr = '((p -> r) v (q -> r)) -> ((p v q) -> r)';
 ```
 4. Run it:
 ```shell
@@ -27,7 +27,7 @@
 2) Open script.js with a terminal [as wide as possible horizontally so as to not to have lines roll over onto the next line]
 3) Edit the inputStr to match the expression you would like to generate a truthtable for
 ```javascript
-  let inputStr = 'p,q,r, ((p -> r) v (q -> r)) -> ((p v q) -> r)';
+  let inputStr = '((p -> r) v (q -> r)) -> ((p v q) -> r)';
 ```
 4) run node ./script.js
 5) copy-paste the output into the latex file, compile
