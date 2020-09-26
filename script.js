@@ -1,5 +1,5 @@
 //TODO: Check for the switching last two
-let inputStr = 'p,q,r, ((p -> r) v (q -> r)) -> ((p v q) -> r)'; 
+let inputStr = 'p,q,r, q'
 
 let input = inputStr.trim().split(',');
 
@@ -485,7 +485,7 @@ for(let row = 0; row < Object.values(solutions)[0].length; row++) {
        //     break;
        // }
     }
-    latexFormat += '\\\\\n\t';
+    latexFormat += '\\\\\n\t\\hline\n\t';
 }
 latexFormat += `\\end{array}\n    `; //4 spaces = half my console tab (8)
 latexFormat += `\\end{center}\n`;
