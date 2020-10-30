@@ -54,7 +54,8 @@
 ![Picture](https://github.com/volovikariel/Truthtable-solver/blob/master/Truth-table-solver-example-output.png)
 
 ### Things to be careful of
-The inputStr starts with the variables used in the expression comma separated without any spaces between them.
+~~The inputStr starts with the variables used in the expression comma separated without any spaces between them~~
+It now automatically figures out the predicates (someone submitted a pull request)
 
 Parentheses are needed to correctly parse the input.
 
