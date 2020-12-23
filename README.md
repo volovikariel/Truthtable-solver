@@ -16,8 +16,9 @@
 ```
 4. Run it:
 ```shell
-  $ node ./script.js
+  $ node src/script.js
 ```
+You can optionally add the `--dev` tag and `--table` tags. What they change is code preceeded with `process.dev` or `process.table`.
 5 (Optional). If you want to have your Table properly center in your Latex page, make sure to add
 ```Latex
 \usepackage[margin=1in]{geometry}
