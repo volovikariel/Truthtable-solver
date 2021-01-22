@@ -1,5 +1,5 @@
 # Truthtable-solver
-Small application which - given a set of logical operations, returns some Latex code which can be plopped into your Latex file and it will format it all for you, as well as give you the answer.
+Small application which given a logical expression, returns some Latex (which represents the solution to the logical expression) which can be plopped into your Latex file.
 
 ## How to run it
 
