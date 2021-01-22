@@ -1,4 +1,5 @@
 # Truthtable-solver
+Small application which - given a set of logical operations, returns some Latex code which can be plopped into your Latex file and it will format it all for you, as well as give you the answer.
 
 ## How to run it
 
